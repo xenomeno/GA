@@ -12,10 +12,11 @@ Following are some comparisons graphics. First is the maximization problem. On t
 Population Size: 30, Generations: 20
 
 No fitness scaling(fitness is the objective itself):
-![](POP30_GEN20.bmp?raw=true "Title")
+
+![](POP30_GEN20.jpg?raw=true "Title")
 
 Fitness scaling 1.5: NewMaxFitness = 1.5 * AvgFitness, NewAvgFitness = AvgFitness
-![](POP30_GEN20_SCALE1.50.bmp?raw=true "Title")
+![](POP30_GEN20_SCALE1.50.jpg?raw=true "Title")
 
 Fitness scaling 1.5: NewMaxFitness = 2 * AvgFitness, NewAvgFitness = AvgFitness
-![](POP30_GEN20_SCALE1.50.bmp?raw=true "Title")
+![](POP30_GEN20_SCALE1.50.jpg?raw=true "Title")
