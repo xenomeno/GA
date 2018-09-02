@@ -20,3 +20,17 @@ Fitness scaling 1.50: NewMaxFitness = 1.50 * AvgFitness, NewAvgFitness = AvgFitn
 
 Fitness scaling 2.0: NewMaxFitness = 2 * AvgFitness, NewAvgFitness = AvgFitness
 ![](POP30_GEN20_SCALE2.00.jpg?raw=true "Title")
+
+
+
+Population Size: 300, Generations: 120
+
+No fitness scaling(fitness is the objective itself):
+
+![](POP300_GEN120.jpg?raw=true "Title")
+
+Fitness scaling 1.50: NewMaxFitness = 1.50 * AvgFitness, NewAvgFitness = AvgFitness
+![](POP300_GEN120_SCALE1.50.jpg?raw=true "Title")
+
+Fitness scaling 2.0: NewMaxFitness = 2 * AvgFitness, NewAvgFitness = AvgFitness
+![](POP300_GEN120_SCALE2.00.jpg?raw=true "Title")
