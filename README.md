@@ -1,117 +1,22 @@
 # GA
 Genetic Algorithms
 
-Simple Genetic Algorithm implementation for maximizing f(x)=x^10 and minimizing De Jong's F1 function f(x,y,z)=x^2+y^2+z^2
+Simple Genetic Algorithm implementation for maximizing f(x)=x^10 and minimizing De Jong's F1 and F5 functions.
 
-Two implementations via 2-alphabet(bitstrings) and 8-alphabet are compared on both functions as different parameters are tweaked to investigate how the objective changes as generations are advancing. Implementation is in Lua and is based on David E. Goldberg's book "Genetic Algorithms: In Search, Optimization and Machine Learning".
+Implementation is in Lua and is based on David E. Goldberg's book "Genetic Algorithms: In Search, Optimization and Machine Learning".
 
-Different max generations, population size are tested along without and with fitness scaling(a few different scaling values). Bitstring implementation is optimized to be internally represented as 32bit integer words. Octal strings are ordinary strings. Bitmap file saving implementation in is pure Lua and is very slow but is used to draw graph for comparisions.
+Different population sizes are tested along without and with fitness scaling(a few different scaling values). Ranking procedures and selection methods are also compared. Bitstring implementation is optimized to be internally represented as 32bit integer words. Octal strings are ordinary strings. Bitmap file saving implementation in is pure Lua and is very slow but is used to draw graph for comparisions.
 
-Following are some comparisons graphics. First is the maximization problem. On the left are the bitstrings and on the right is the 8-alphabet. Results without fitness scaling and with different scaling factors are shown.
+Following are some comparisons graphics. On the left is the Interim performance performance and on the right the Ultimate performance up to each generation. Interim is the on-line performance so far - the best objectives up to a given genertion are summed and divided by the generation to get the average best through the generations. Ultimate is the off-line performance plotting the best individual so far for all generations tested.
 
-Population Size: 30, Generations: 20
+Compare and contrast alternative selection methods:
+![](Selections.png?raw=true "Title")
 
-No fitness scaling(fitness is the objective itself):
+Compare and contrast alternative scaling schemes:
+![](Scaling.png?raw=true "Title")
 
-![](POP30_GEN20.jpg?raw=true "Title")
+Compare and contrast alternative ranking procedures:
+![](Scaling.png?raw=true "Title")
 
-Fitness scaling 1.50: NewMaxFitness = 1.50 * AvgFitness, NewAvgFitness = AvgFitness
-![](POP30_GEN20_SCALE1.50.jpg?raw=true "Title")
-
-Fitness scaling 2.0: NewMaxFitness = 2 * AvgFitness, NewAvgFitness = AvgFitness
-![](POP30_GEN20_SCALE2.00.jpg?raw=true "Title")
-
-
-
-
-
-
-
-
-
-
-
-Population Size: 300, Generations: 120
-
-No fitness scaling(fitness is the objective itself):
-
-![](POP300_GEN120.jpg?raw=true "Title")
-
-Fitness scaling 1.50: NewMaxFitness = 1.50 * AvgFitness, NewAvgFitness = AvgFitness
-![](POP300_GEN120_SCALE1.50.jpg?raw=true "Title")
-
-Fitness scaling 2.00: NewMaxFitness = 2.00 * AvgFitness, NewAvgFitness = AvgFitness
-![](POP300_GEN120_SCALE2.00.jpg?raw=true "Title")
-
-
-
-
-
-
-
-Minimization problem on the De Jong's function F1
-
-
-Population Size: 30, Generations: 20
-
-No fitness scaling(fitness is the objective itself):
-![](MIN_POP30_GEN20.jpg?raw=true "Title")
-
-Fitness scaling 1.10: NewMaxFitness = 1.10 * AvgFitness, NewAvgFitness = AvgFitness
-![](MIN_POP30_GEN20_SCALE1.10.jpg?raw=true "Title")
-
-Fitness scaling 1.20: NewMaxFitness = 1.20 * AvgFitness, NewAvgFitness = AvgFitness
-![](MIN_POP30_GEN20_SCALE1.20.jpg?raw=true "Title")
-
-Fitness scaling 1.50: NewMaxFitness = 1.50 * AvgFitness, NewAvgFitness = AvgFitness
-![](MIN_POP30_GEN20_SCALE1.50.jpg?raw=true "Title")
-
-Fitness scaling 2.00: NewMaxFitness = 2.00 * AvgFitness, NewAvgFitness = AvgFitness
-![](MIN_POP30_GEN20_SCALE2.00.jpg?raw=true "Title")
-
-
-
-
-
-
-
-
-
-
-
-Population Size: 30, Generations: 120
-
-No fitness scaling(fitness is the objective itself):
-![](MIN_POP30_GEN120.jpg?raw=true "Title")
-
-Fitness scaling 1.10: NewMaxFitness = 1.10 * AvgFitness, NewAvgFitness = AvgFitness
-![](MIN_POP30_GEN120_SCALE1.10.jpg?raw=true "Title")
-
-Fitness scaling 1.20: NewMaxFitness = 1.20 * AvgFitness, NewAvgFitness = AvgFitness
-![](MIN_POP30_GEN120_SCALE1.20.jpg?raw=true "Title")
-
-Fitness scaling 1.50: NewMaxFitness = 1.50 * AvgFitness, NewAvgFitness = AvgFitness
-![](MIN_POP30_GEN120_SCALE1.50.jpg?raw=true "Title")
-
-Fitness scaling 2.00: NewMaxFitness = 2.00 * AvgFitness, NewAvgFitness = AvgFitness
-![](MIN_POP30_GEN120_SCALE2.00.jpg?raw=true "Title")
-
-Population Size: 300, Generations: 120
-
-No fitness scaling(fitness is the objective itself):
-![](MIN_POP300_GEN120.jpg?raw=true "Title")
-
-Fitness scaling 1.10: NewMaxFitness = 1.10 * AvgFitness, NewAvgFitness = AvgFitness
-![](MIN_POP300_GEN120_SCALE1.10.jpg?raw=true "Title")
-
-Fitness scaling 1.20: NewMaxFitness = 1.20 * AvgFitness, NewAvgFitness = AvgFitness
-![](MIN_POP300_GEN120_SCALE1.20.jpg?raw=true "Title")
-
-Fitness scaling 1.50: NewMaxFitness = 1.50 * AvgFitness, NewAvgFitness = AvgFitness
-![](MIN_POP300_GEN120_SCALE1.50.jpg?raw=true "Title")
-
-Fitness scaling 2.00: NewMaxFitness = 2.00 * AvgFitness, NewAvgFitness = AvgFitness
-![](MIN_POP300_GEN120_SCALE2.00.jpg?raw=true "Title")
-
-
-
+Compare and contrast different crossover points count:
+![](CrossoverPoints.jpg?raw=true "Title")
