@@ -1,12 +1,32 @@
 dofile("Bitmap.lua")
 
-function DrawGraphs(bmp, funcs_data, div, int_x, int_y)
+local function clamp(x, min, max)
+  if x < min then
+    return min
+  elseif x > max then
+    return max
+  else
+    return x
+  end
+end
+
+function DrawGraphs(bmp, funcs_data, div, interval, int_x, int_y, skip_KP, limit_y_min, limit_y_max)
   div = div or 10
+  interval = interval or 1
+  
+  local order = {}
+  for name in pairs(funcs_data.funcs) do
+    table.insert(order, name)
+  end
+  table.sort(order)
   
   local any = funcs_data.funcs[next(funcs_data.funcs)][1]
-  local min_x, min_y, max_x, max_y = any.x, any.y, any.x, any.y
-  for _, func_points in pairs(funcs_data.funcs) do
+  local y = (limit_y_min and limit_y_max) and clamp(any.y, limit_y_min, limit_y_max) or any.y
+  local min_x, min_y, max_x, max_y = any.x, y, any.x, y
+  for _, name in ipairs(order) do
+    local func_points = funcs_data.funcs[name]
     for _, pt in ipairs(func_points) do
+      pt.y = (limit_y_min and limit_y_max) and clamp(pt.y, limit_y_min, limit_y_max) or pt.y
       min_x = (pt.x < min_x) and pt.x or min_x
       min_y = (pt.y < min_y) and pt.y or min_y
       max_x = (pt.x > max_x) and pt.x or max_x
@@ -17,7 +37,7 @@ function DrawGraphs(bmp, funcs_data, div, int_x, int_y)
   local size_x = math.ceil(max_x)
   local size_y = math.ceil(max_y)
   
-  local width, height = bmp.width, bmp.height
+  local width, height = bmp.width - 1, bmp.height - 1
   local spacing_x, spacing_y = width // (div + 2), height // (div + 2)
   local scale_x, scale_y = 10 * spacing_x / size_x, 10 * spacing_y / size_y
   local Ox = spacing_x
@@ -41,16 +61,21 @@ function DrawGraphs(bmp, funcs_data, div, int_x, int_y)
   -- draw graphs
   local box_size = 2
   local name_x = spacing_x + 10
-  for name, func_points in pairs(funcs_data.funcs) do
+  for _, name in ipairs(order) do
+    local func_points = funcs_data.funcs[name]
     local last_x, last_y
-    for _, pt in ipairs(func_points) do
-      local x = math.floor(Ox + scale_x * pt.x)
-      local y = math.floor(Oy - scale_y * pt.y)
-      if last_x and last_y then
-        bmp:DrawLine(last_x, last_y, x, y, func_points.color)
+    for idx, pt in ipairs(func_points) do
+      if (idx - 1) % interval == 0 then
+        local x = math.floor(Ox + scale_x * pt.x)
+        local y = math.floor(Oy - scale_y * pt.y)
+        if last_x and last_y then
+          bmp:DrawLine(last_x, last_y, x, y, func_points.color)
+        end
+        if not skip_KP then
+          bmp:DrawBox(x - box_size, y - box_size, x + box_size, y + box_size, func_points.color)
+        end
+        last_x, last_y = x, y
       end
-      bmp:DrawBox(x - box_size, y - box_size, x + box_size, y + box_size, func_points.color)
-      last_x, last_y = x, y
     end
     local w, h = bmp:MeasureText(name)
     bmp:DrawText(name_x, height - h, name, func_points.color)
@@ -62,6 +87,6 @@ function DrawGraphs(bmp, funcs_data, div, int_x, int_y)
   end
   if funcs_data.name_x then
     local w, h = bmp:MeasureText(funcs_data.name_x)
-    bmp:DrawText(width - w - 5, height - h - 5, funcs_data.name_x, {128, 128, 128})
+    bmp:DrawText(width - w - 5, height - h * 2 - 5, funcs_data.name_x, {128, 128, 128})
   end
 end

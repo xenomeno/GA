@@ -191,6 +191,24 @@ function ExchangeTailBits(words1, words2, tail_pos)
   end
 end
 
+function GetCommonBits(words1, words2)
+  local count = (#words1 < #words2) and #words1 or #words2
+  local common = 0
+  for idx = 1, count do
+    local word1 = words1[idx]
+    local word2 = words2[idx]
+    while word1 > 0 and word2 > 0 do
+      if ((word1 & 1) ~= 0) and ((word2 & 1) ~= 0) then
+        common = common + 1
+      end
+      word1 = word1 >> 1
+      word2 = word2 >> 1
+    end
+  end
+  
+  return common
+end
+
 function FlipCoin(bias)
   return math.random() < (bias or 0.5)
 end

@@ -4,7 +4,9 @@ local DEFAULT_SPACING = 1
 Bitmap = {}
 Bitmap.__index = Bitmap
  
-function Bitmap.new(width, height)
+function Bitmap.new(width, height, init_color)
+    init_color = init_color or { 255, 255, 255 }
+    
     local self = {}
     setmetatable(self, Bitmap)
     
@@ -12,7 +14,7 @@ function Bitmap.new(width, height)
     for y = 0, height - 1 do
       data[y] = {}
       for x = 0, width - 1 do
-        data[y][x] = { 255, 255, 255 }
+        data[y][x] = init_color
       end
     end
     self.width = width
@@ -82,14 +84,15 @@ function Bitmap:WriteBMP(filename)
     fh:flush()
 end
  
-function Bitmap:Fill(x, y, width, heigth, color)
+function Bitmap:Fill(x, y, width, height, color)
     width = (width == nil) and self.width or width
     height = (height == nil) and self.height or height
-    width = width + x - 1
-    height = height + y - 1
+    width = x + width - 1
+    height = y + height - 1
     for i = y, height do
+      local data = self.data[i]
         for j = x, width do
-            self:SetPixel(j, i, color)
+            data[j] = color
         end
     end
 end
@@ -369,6 +372,66 @@ local s_Char =
     "**      ",
     "**      ",
   },
+  [","] =
+  {
+    "        ",
+    "        ",
+    "        ",
+    "        ",
+    "        ",
+    "        ",
+    "  **    ",
+    "* **    ",
+    " **     ",
+  },
+  ["-"] =
+  {
+    "        ",
+    "        ",
+    "        ",
+    "        ",
+    "********",
+    "        ",
+    "        ",
+    "        ",
+    "        ",
+  },
+  ["+"] =
+  {
+    "        ",
+    "   **   ",
+    "   **   ",
+    "   **   ",
+    "********",
+    "   **   ",
+    "   **   ",
+    "   **   ",
+    "        ",
+  },
+  ["_"] =
+  {
+    "        ",
+    "        ",
+    "        ",
+    "        ",
+    "        ",
+    "        ",
+    "        ",
+    "        ",
+    "********",
+  },
+  ["="] =
+  {
+    "        ",
+    "        ",
+    "        ",
+    "********",
+    "        ",
+    "********",
+    "        ",
+    "        ",
+    "        ",
+  },
   ["A"] =
   {
     "    *   ",
@@ -464,6 +527,18 @@ local s_Char =
     "   *    ",
     "   *    ",
     "******* ",
+  },
+  ["H"] =
+  {
+    "*      *",
+    "*      *",
+    "*      *",
+    "*      *",
+    "********",
+    "*      *",
+    "*      *",
+    "*      *",
+    "*      *",
   },
   ["J"] =
   {
@@ -621,6 +696,18 @@ local s_Char =
     "   *    ",
     "  *     ",
   },
+  ["W"] =
+  {
+    "*      *",
+    "*      *",
+    "*      *",
+    "*      *",
+    "*      *",
+    "*  **  *",
+    "*  **  *",
+    " **  ** ",
+    " *    * ",
+  },
   ["X"] =
   {
     "*      *",
@@ -632,6 +719,30 @@ local s_Char =
     "  *  *  ",
     " *    * ",
     "*      *",
+  },
+  ["Z"] =
+  {
+    "********",
+    "       *",
+    "      * ",
+    "     *  ",
+    "    *   ",
+    "   *    ",
+    "  *     ",
+    " *      ",
+    "********",
+  },
+  ["^"] =
+  {
+    "   **   ",
+    "  *  *  ",
+    " *    * ",
+    "*      *",
+    "        ",
+    "        ",
+    "        ",
+    "        ",
+    "        ",
   },
   [":"] =
   {
