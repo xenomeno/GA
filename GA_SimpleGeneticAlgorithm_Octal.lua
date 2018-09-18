@@ -322,7 +322,7 @@ local function RunSGA(max_generations)
   
   local bmp = Bitmap.new(IMAGE_WIDTH, IMAGE_HEIGHT)
   bmp:Fill(0, 0, IMAGE_WIDTH, IMAGE_HEIGHT, {0, 0, 0})
-  DrawGraphs(bmp, graphs, nil, "int x")
+  DrawGraphs(bmp, graphs, nil, nil, "int x")
   local text = string.format("Time (Lua 5.3): %ss", time)
   local tw, th = bmp:MeasureText(text)
   bmp:DrawText(IMAGE_WIDTH - tw - 5, 5, text, {128, 128, 128})
