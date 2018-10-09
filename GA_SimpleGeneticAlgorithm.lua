@@ -2,6 +2,7 @@ dofile("GA_Common.lua")
 dofile("GA_CompareSets.lua")
 dofile("Bitmap.lua")
 dofile("Graphics.lua")
+dofile("CommonAI.lua")
 
 local POPULATION_SIZE       = 30
 local CHROMOSOME_LENGTH     = 30
@@ -9,6 +10,7 @@ local GENERATION_GAP        = 1       -- 1.0 means no overlaping populations
 local CROWDING_FACTOR       = 2
 local CROSSOVER_POINTS      = 1
 local MINIMIZATION          = "DeJongF5"
+local G_BIT_IMPROVE         = true
 
 local CROSSOVER_RATE        = 0.6
 local MAX_GENERATIONS       = 20
@@ -122,6 +124,34 @@ local function GenInitPopulation(size, chromosome_len)
   return population
 end
 
+local function GBitImprove(pop)
+  local func = MINIMIZATION and table.min or table.max
+  local best, best_idx = func(pop, function(individual) return individual.objective end)
+  local chrom = best.chromosome
+  local altered_chrom = CopyBitstring(chrom)
+  local better_chrom, better_objective = CopyBitstring(chrom), best.objective
+  local word_size = GetBitstringWordSize()
+  local word_idx, bit_pos, power2 = 1, 1, 1
+  for bit = 1, chrom.bits do
+    local word, altered_word = chrom[word_idx], altered_chrom[word_idx]
+    local allele = (word & power2) ~= 0
+    altered_chrom[word_idx] = allele and (word - power2) or (word + power2)
+    local objective = EvaluateChromosome(altered_chrom)
+    if (MINIMIZATION and objective < better_objective) or (not MINIMIZATION and objective > better_objective) then
+      better_objective = objective
+      better_chrom = CopyBitstring(altered_chrom)
+    end
+    altered_chrom[word_idx] = altered_word
+    bit_pos, power2 = bit_pos + 1, power2 * 2
+    if bit_pos > word_size then
+      word_idx, bit_pos, power2 = word_idx + 1, 1, 1
+    end
+  end
+  if better_objective ~= best.objective then
+    pop[best_idx].chrom = better_chrom
+  end
+end
+
 local s_BiggestValue = false
 
 -- NOTE: evaluates partial total fitness per each individual(which becomes in sorted order)
@@ -140,6 +170,9 @@ local function EvaluatePopulation(pop, old_pop, gen)
   pop.total_objective = total_objective
   pop.avg_objective = total_objective / #pop
   pop.min_objective, pop.max_objective = min_objective, max_objective
+  if G_BIT_IMPROVE then
+    GBitImprove(pop)
+  end
   
   if MINIMIZATION then
     s_BiggestValue = Max(s_BiggestValue, max_objective)
@@ -519,6 +552,7 @@ local function RunSGA(set, max_generations)
     if descr.sigma_trunc then SIGMA_TRUNC = descr.sigma_trunc else SIGMA_TRUNC = false end
     if descr.generation_gap then GENERATION_GAP = descr.generation_gap else GENERATION_GAP = 1.0 end
     if descr.crowding_factor then CROWDING_FACTOR = descr.crowding_factor else CROWDING_FACTOR = false end
+    if descr.gbit_improve then G_BIT_IMPROVE = descr.gbit_improve else G_BIT_IMPROVE = false end
     INIT_DEPRESSION = set.init_depression or (MINIMIZATION and 400.0 or 0.1)
     RecalculateParams()
     print(string.format("#%d/%d, %s: %s%s, n=%d, gens=%d%s", set_idx, #set, MINIMIZATION or "Max", ROULETTE_WHEEL and "RWS" or "SRSWR", RANK_SELECTION and "[Rank]" or "", POPULATION_SIZE, MAX_GENERATIONS, FITNESS_SCALING and string.format(", FS=%.3f", FITNESS_SCALING) or ""))
@@ -572,15 +606,16 @@ local function RunSGA(set, max_generations)
           -- mutation
           local mut1 = Mutate(offspring1)
           local mut2 = Mutate(offspring2)
-          new_pop.mutations = new_pop.mutations + mut1 + mut2
           
           -- store ancestry tree
           offspring1.parent1, offspring1.parent2 = idx1, idx2
           offspring2.parent1, offspring2.parent2 = idx1, idx2
           table.insert(new_pop, offspring1)
+          new_pop.mutations = new_pop.mutations + mut1
           if #new_pop < POPULATION_SIZE then
             -- shield in case population size is odd
             table.insert(new_pop, offspring2)
+            new_pop.mutations = new_pop.mutations + mut2
           end
         end
         
@@ -653,5 +688,5 @@ local function RunSGA(set, max_generations)
   end
 end
 
-RunSGA(GA_CompareSets.Max_Ranking_RouletteWheel_vs_StochasticRemainder)
+RunSGA(GA_CompareSets.F5_GBitImprove)
 --for _, set in pairs(GA_CompareSets) do RunSGA(set) end    -- uncomment this to run all the tests

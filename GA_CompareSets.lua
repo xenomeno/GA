@@ -1,25 +1,3 @@
-function string.format_table(fmt_str, params_tbl, num_fmt)
-  local function repl_func(param)
-    local value = params_tbl[param]
-    if value ~= nil then
-      if type(value) == "bool" then
-        return tostring(value)
-      elseif type(value) == "number" then
-        local value_fmt = num_fmt and num_fmt[param]
-        return value_fmt and string.format(value_fmt, value) or tostring(value)
-      else
-        return tostring(value)
-      end
-    else
-      return string.format("<%s - invalid param!>", param)
-    end
-  end
-
-  local str = string.gsub(fmt_str, "<([%w_]+)>", repl_func)
-  
-  return str
-end
-    
 GA_CompareSets =
 {
   F1_RouletteWheel_vs_StochasticRemainder =
@@ -514,5 +492,59 @@ GA_CompareSets =
     { size = 30, minimization =false, roulette_wheel = true, rank_selection = true, color = {0, 64, 0}, name = "RW+RS" },
     { size = 60, minimization = false, roulette_wheel = true, rank_selection = true, color = {0, 128, 0}, name = "RW+RS" },
     { size = 100, minimization = false, roulette_wheel = true, rank_selection = true, color = {0, 255, 0}, name = "RW+RS" },
+  },
+  Max_GBitImprove =
+  {
+    test_name = "Max x^10: G-Bit Improvement",
+    plots =
+    {
+      { image = "MaxPow10_GBit_Interim", graph = "Interim" },
+      { image = "MaxPow10_GBit_Ultimate", graph = "Ultimate" },
+    },
+    func_name = "n=<size> G-Bit=<gbit_improve>",
+    runs = 20,
+    init_depression = 0.01,
+    { size = 30, minimization = false, roulette_wheel = true, gbit_improve = false, color = {64, 0, 0} },
+    { size = 60, minimization = false, roulette_wheel = true, gbit_improve = false, color = {128, 0, 0} },
+    { size = 100, minimization = false, roulette_wheel = true, gbit_improve = false, color = {255, 0, 0} },
+    { size = 30, minimization = false, roulette_wheel = true, gbit_improve = true, color = {0, 64, 0} },
+    { size = 60, minimization = false, roulette_wheel = true, gbit_improve = true, color = {0, 128, 0} },
+    { size = 100, minimization = false, roulette_wheel = true, gbit_improve = true, color = {0, 255, 0} },
+  },
+  F1_GBitImprove =
+  {
+    test_name = "De Jong F1: G-Bit Improvement",
+    plots =
+    {
+      { image = "DeJongF1_GBit_Interim", graph = "Interim" },
+      { image = "DeJongF1_GBit_Ultimate", graph = "Ultimate" },
+    },
+    func_name = "n=<size> G-Bit=<gbit_improve>",
+    runs = 20,
+    init_depression = 0.01,
+    { size = 30, minimization = "DeJongF1", roulette_wheel = true, gbit_improve = false, color = {64, 0, 0} },
+    { size = 60, minimization = "DeJongF1", roulette_wheel = true, gbit_improve = false, color = {128, 0, 0} },
+    { size = 100, minimization = "DeJongF1", roulette_wheel = true, gbit_improve = false, color = {255, 0, 0} },
+    { size = 30, minimization = "DeJongF1", roulette_wheel = true, gbit_improve = true, color = {0, 64, 0} },
+    { size = 60, minimization = "DeJongF1", roulette_wheel = true, gbit_improve = true, color = {0, 128, 0} },
+    { size = 100, minimization = "DeJongF1", roulette_wheel = true, gbit_improve = true, color = {0, 255, 0} },
+  },
+  F5_GBitImprove =
+  {
+    test_name = "De Jong F5: G-Bit Improvement",
+    plots =
+    {
+      { image = "DeJongF5_GBit_Interim", graph = "Interim" },
+      { image = "DeJongF5_GBit_Ultimate", graph = "Ultimate" },
+    },
+    func_name = "n=<size> G-Bit=<gbit_improve>",
+    runs = 20,
+    init_depression = 0.01,
+    { size = 30, minimization = "DeJongF5", roulette_wheel = true, gbit_improve = false, color = {64, 0, 0} },
+    { size = 60, minimization = "DeJongF5", roulette_wheel = true, gbit_improve = false, color = {128, 0, 0} },
+    { size = 100, minimization = "DeJongF5", roulette_wheel = true, gbit_improve = false, color = {255, 0, 0} },
+    { size = 30, minimization = "DeJongF5", roulette_wheel = true, gbit_improve = true, color = {0, 64, 0} },
+    { size = 60, minimization = "DeJongF5", roulette_wheel = true, gbit_improve = true, color = {0, 128, 0} },
+    { size = 100, minimization = "DeJongF5", roulette_wheel = true, gbit_improve = true, color = {0, 255, 0} },
   },
 }
