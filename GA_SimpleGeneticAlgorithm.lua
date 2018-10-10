@@ -147,9 +147,13 @@ local function GBitImprove(pop)
       word_idx, bit_pos, power2 = word_idx + 1, 1, 1
     end
   end
+  local old_objective = best.objective
   if better_objective ~= best.objective then
     pop[best_idx].chrom = better_chrom
+    pop[best_idx].objective = better_objective
   end
+  
+  return old_objective, better_objective
 end
 
 local s_BiggestValue = false
@@ -166,13 +170,18 @@ local function EvaluatePopulation(pop, old_pop, gen)
     individual.objective = objective
     total_objective = total_objective + objective
   end
+  if G_BIT_IMPROVE then
+    local old_objective, better_objective = GBitImprove(pop)
+    if old_objective ~= better_objective then
+      min_objective = Min(min_objective, better_objective)
+      max_objective = Max(max_objective, better_objective)
+      total_objective = total_objective - old_objective + better_objective
+    end
+  end
   pop[0] = { objective = 0.0 }
   pop.total_objective = total_objective
   pop.avg_objective = total_objective / #pop
   pop.min_objective, pop.max_objective = min_objective, max_objective
-  if G_BIT_IMPROVE then
-    GBitImprove(pop)
-  end
   
   if MINIMIZATION then
     s_BiggestValue = Max(s_BiggestValue, max_objective)
@@ -688,5 +697,5 @@ local function RunSGA(set, max_generations)
   end
 end
 
-RunSGA(GA_CompareSets.F5_GBitImprove)
+RunSGA(GA_CompareSets.Max_GBitImprove)
 --for _, set in pairs(GA_CompareSets) do RunSGA(set) end    -- uncomment this to run all the tests
