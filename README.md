@@ -20,3 +20,6 @@ Compare and contrast alternative ranking procedures:
 
 Compare and contrast different crossover points count:
 ![](CrossoverPoints.jpg?raw=true "Title")
+
+Compare and contrast G-Bit Improvement support:
+![](GBitImprove.bmp?raw=true "Title")
